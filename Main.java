@@ -58,11 +58,48 @@ public class Main {
 
     // Kompresijas metode
     private static void compress(String fileContent) {
-        System.out.println(fileContent);
+        byte[] input = fileContent.getBytes();
+        //byte[] lzout = LZ77.compress(input);
+        //byte[] hufmanout = Huffman.compress(lzout);
     }
 
     // Dekompresijas metode
     private static void decompress(String fileContent) {
-        System.out.println(fileContent);
+        byte[] input = fileContent.getBytes();
+        //byte[] hufmanout = Huffman.decompress(lzout);
+        //byte[] lzout = LZ77.decompress(input);
+    }
+}
+
+
+// LZ77 token klase kas paredzēta LZ77 tokena izveidei objekta formā, lai varētu vieglāk piekļūt pie tokena informācijas pirms tā pārveidošanas
+class LZ77Token{
+    private int offset;
+    private int lenght;
+    private byte character;
+    public LZ77Token(int offset, int lenght, byte character){
+        this.offset = offset;
+        this.lenght = lenght;
+        this.character = character;
+    }
+
+    public int getOffset(){
+        return this.offset;
+    }
+
+    public int getLenght(){
+        return this.lenght;
+    }
+
+    public int getChar(){
+        return this.character;
+    }
+    // pārveido LZ77 tokenu par bināro masīvu, lai to varētu tālāk sūtit Huffman
+    public byte[] toBinnary(){
+        byte[] convert = new byte[3];
+        convert[0] = (byte)offset;
+        convert[1] = (byte)lenght;
+        convert[2] = character;
+        return convert;
     }
 }
