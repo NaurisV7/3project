@@ -66,7 +66,7 @@ public class Main {
     // Dekompresijas metode
     private static void decompress(String fileContent) {
         byte[] input = fileContent.getBytes();
-        //byte[] hufmanout = Huffman.decompress(lzout);
+        //byte[] hufmanout = Huffman.decompress(lzout);         //te nevajag būt input?
         //byte[] lzout = LZ77.decompress(input);
     }
 }
