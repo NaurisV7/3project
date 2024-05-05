@@ -2,16 +2,17 @@ import java.util.LinkedList;
 
 // Huffman kompresija un dekompresija
 public class Huffman {
-    HuffmanTree HT = new HuffmanTree();
+    CreateHuffmanTree HT = new CreateHuffmanTree();
     LinkedList<byte[]> result = new LinkedList<byte[]>();
+    
 
     public byte[] compress(byte[] lzout){
         // izveido simbolu biežuma koku saskaitot katru bitu kombināciju biežumu failā
-        HT.createCompTree(lzout);
+        HT.addData(lzout, "comp");
         // izvadīt bitu kombinācijas kas piešķirtas simboliem pēc bitu skaita
-        for(int i=0; i<HT.leafCount; i++){ // HT zaru beigu skaits
+        for(int i=0; i<=8; i++){
             //rekursijas metode: iet cauri kokam pa līmeņiem un atgriež bitus, ja tas ir simbols
-            LinkedList<Node> symbols = findStmbols(HT.Head, i); // pirmais HT elements 
+            LinkedList<Node> symbols = findSymbols(HT.root, i); // pirmais HT elements 
             int count = symbols.size();
             if(count>0){
                 // pievienot "count" un "i", katru 4 bitos un 1 baitā
