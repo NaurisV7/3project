@@ -4,7 +4,6 @@ import java.util.LinkedList;
 public class Huffman {
     CreateHuffmanTree HT = new CreateHuffmanTree();
     LinkedList<byte[]> result = new LinkedList<byte[]>();
-    
 
     public byte[] compress(byte[] lzout){
         // izveido simbolu biežuma koku saskaitot katru bitu kombināciju biežumu failā
@@ -85,8 +84,30 @@ public class Huffman {
 
     public byte[] decompress(byte[] input){
         // izveido simbolu biežuma koku nolasot informāciju no faila sākuma
-        HT.createDecompTree(input);
-        
+        HT.addData(input, "decomp");
+        int loopCount = 0, length = 0;
+        boolean loopFinished = false;
+        Node current = HT.head; // HT pirmais elements
+        for(byte s : input){
+            // izlaist daļu kur tiek saglabāti simboli
+            if(!loopFinished & (loopCount==0 & (s >> 4)!=0)){
+                loopCount = s >> 4;
+            } else if(loopFinished | (loopCount==0 & (s >> 4)==0)) { // īstais fails
+                loopFinished = true;
+                // atrast pareizo simbolu kokā
+                for(int i=length; i<8; i++){
+                    if((s & (128 >> i))==1){
+                        current = current.right;
+                    }else{
+                        current = current.right;
+                    }
+                    if(current.left==null){
+                        byte[] symb = {current.symbol};
+                        result.add(symb);
+                    }
+                }
+            }
+        }
     }
     // rekursijas metode, lai iegūtu dilstošā secībā sakārtotus sibolus un to jaunās bitu kombinācijas
     private LinkedList<Node> findSymbols(Node n, int length){
