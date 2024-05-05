@@ -9,6 +9,8 @@ public class Node{
     public void Node(byte symbol, int count, byte HTsymbol, int HTsymbolLength){
         this.symbol = symbol;
         this.count = count;
+        this.left = null;
+        this.right = null;
         this.HTsymbol = HTsymbol;
         this.HTsymbolLength = HTsymbolLength;
     }
