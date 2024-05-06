@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Main {
@@ -15,6 +16,7 @@ public class Main {
         // Jautā faila nosaukumu
         System.out.println("Lūdzu, ievadiet faila nosaukumu:");
         String fileName = scanner.nextLine();
+        scanner.close();
 
         // Pārbauda, vai faila nosaukums satur paplašinājumu '.html'
         if (!fileName.endsWith(".html")) {
@@ -59,15 +61,19 @@ public class Main {
     // Kompresijas metode
     private static void compress(String fileContent) {
         byte[] input = fileContent.getBytes();
-        //byte[] lzout = LZ77.compress(input);
-        //byte[] hufmanout = Huffman.compress(lzout);
+        byte[] lzout = LZ77.compress(input);
+        byte[] hufmanout = Huffman.compress(lzout);
+        // rakstīt jaunu failu ???
     }
 
     // Dekompresijas metode
     private static void decompress(String fileContent) {
         byte[] input = fileContent.getBytes();
-        //byte[] hufmanout = Huffman.decompress(lzout);
-        //byte[] lzout = LZ77.decompress(input);
+
+
+        byte[] huffmanout = Huffman.decompress(input);
+        byte[] lzout = LZ77.decompress(huffmanout);
+        // rakstīt jaunu failu ???
     }
 
 
@@ -168,5 +174,6 @@ class LZ77Token{
         convert[1] = (byte)lenght;
         convert[2] = character;
         return convert;
+
     }
 }
