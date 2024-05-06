@@ -3,7 +3,7 @@ import java.util.PriorityQueue;
 
 public class CreateHuffmanTree {
     
-    public Node root;
+    public Node root; // now public
     private HashMap<Character, Integer> frequencyMap;
     
     public CreateHuffmanTree() {
@@ -28,15 +28,15 @@ public class CreateHuffmanTree {
             frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);
         }
         
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.frequency - b.frequency);
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.count - b.count);
         for (char c : frequencyMap.keySet()) {
-            pq.add(new Node(c, frequencyMap.get(c)));
+            pq.add(new Node(c, frequencyMap.get(c), (byte) 0, 0));
         }
         
         while (pq.size() > 1) {
             Node left = pq.poll();
             Node right = pq.poll();
-            Node parent = new Node('\0', left.frequency + right.frequency);
+            Node parent = new Node('\0', left.count + right.count, (byte) 0, 0);
             parent.left = left;
             parent.right = right;
             pq.add(parent);
@@ -48,7 +48,7 @@ public class CreateHuffmanTree {
     // Metode, lai uztaisītu Huffman koku dekompresijai
 private void buildDecompHuffmanTree(String data) {
     // Izveidojam tukšu sakni
-    root = new Node('\0', 0);
+    root = new Node('\0', 0, (byte) 0, 0);
     Node current = root;
     
     // Pārlūkojam visus bitus, lai veidotu Huffman koku
@@ -58,12 +58,12 @@ private void buildDecompHuffmanTree(String data) {
         // Ja bitu vērtība ir 0, tad pārvietojamies pa kreiso bērnu, ja ir 1, tad pa labo bērnu
         if (bit == '0') {
             if (current.left == null) {
-                current.left = new Node('\0', 0);
+                current.left = new Node('\0', 0, (byte) 0, 0);
             }
             current = current.left;
         } else if (bit == '1') {
             if (current.right == null) {
-                current.right = new Node('\0', 0);
+                current.right = new Node('\0', 0, (byte) 0, 0);
             }
             current = current.right;
         }
@@ -85,14 +85,14 @@ private void buildDecompHuffmanTree(String data) {
             return;
         }
         if (node.isLeaf()) {
-            System.out.println("Symbol: " + node.symbol + ", Frequency: " + node.frequency);
+            System.out.println("Symbol: " + node.symbol + ", Frequency: " + node.count);
         }
         countSymbols(node.left);
         countSymbols(node.right);
     }
     
-    // Klase, lai pārstāvētu mezglus Huffman kokā
-    // private static class Node {
+    //Klase, lai pārstāvētu mezglus Huffman kokā
+    // public class Node {
     //     char symbol;
     //     int frequency;
     //     Node left;

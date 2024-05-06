@@ -114,7 +114,7 @@ public class Huffman {
                         current = current.right;
                     }
                     if(current.left==null && current.right==null){
-                        byte[] symb = {current.symbol};
+                        byte[] symb = {(byte) current.symbol};
                         result.add(symb);
                     }
                 }
