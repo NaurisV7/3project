@@ -2,37 +2,38 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Jautā lietotājam, vai vēlas kompresēt vai dekompresēt failu
+        // Ask the user whether to compress (c) or decompress (d) the file
         System.out.println("Vai vēlaties kompresēt (c) vai dekompresēt (d) failu?");
         String choice = scanner.nextLine();
 
-        // Jautā faila nosaukumu
+        // Ask for the file name
         System.out.println("Lūdzu, ievadiet faila nosaukumu:");
         String fileName = scanner.nextLine();
 
-        // Pārbauda, vai faila nosaukums satur paplašinājumu '.html'
+        // Check if the file name ends with '.html'
         if (!fileName.endsWith(".html")) {
             System.out.println("Nepareizs faila nosaukums. Failam jābūt ar paplašinājumu '.html'.");
             return;
         }
 
-        // Pārbauda, vai fails eksistē
+        // Check if the file exists
         File file = new File(fileName);
         if (!file.exists()) {
             System.out.println("Norādītais fails neeksistē.");
             return;
         }
 
-        // Nolasa visu faila saturu un saglabā to string mainīgajā
+        // Read the entire content of the file and store it as a string
         String fileContent = readFileContent(file);
 
-        // Izvēlas kompresēt vai dekompresēt atkarībā no lietotāja izvēles
+        // Choose whether to compress or decompress based on the user's choice
         if (choice.equalsIgnoreCase("c")) {
             compress(fileContent);
         } else if (choice.equalsIgnoreCase("d")) {
@@ -42,7 +43,7 @@ public class Main {
         }
     }
 
-    // Metode, kas nolasa faila visu saturu un atgriež to kā string
+    // Method to read the content of a file and return it as a string
     private static String readFileContent(File file) {
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -56,20 +57,19 @@ public class Main {
         return content.toString();
     }
 
-    // Kompresijas metode
+    // Compression method
     private static void compress(String fileContent) {
         byte[] input = fileContent.getBytes();
-        //byte[] lzout = LZ77.compress(input);
-        //byte[] hufmanout = Huffman.compress(lzout);
+        ArrayList<LZ77Token> lz77out = compress(input);
+        // byte[] hufmanout = Huffman.compress(lzout);
     }
 
-    // Dekompresijas metode
+    // Decompression method
     private static void decompress(String fileContent) {
         byte[] input = fileContent.getBytes();
-        //byte[] hufmanout = Huffman.decompress(lzout);
-        //byte[] lzout = LZ77.decompress(input);
+        // byte[] hufmanout = Huffman.decompress(lzout);
+        // byte[] lzout = LZ77.decompress(input);
     }
-
 
     public static ArrayList<LZ77Token> compress(byte[] input) {
         ArrayList<LZ77Token> compressedVal = new ArrayList<>();
@@ -96,11 +96,11 @@ public class Main {
             if (matchLength > 0) {
                 byte nextChar;
                 if (currentIndex + matchLength < input.length) {
-                    nextCharacter = input[currentIndex + matchLength];
+                    nextChar = input[currentIndex + matchLength];
                 } else {
-                    nextCharacter = 0;
+                    nextChar = 0;
                 }
-                LZ77Token tokenToAdd = new LZ77Token(currentIndex - matchStartIndex, matchLength, nextCharacter);
+                LZ77Token tokenToAdd = new LZ77Token(currentIndex - matchStartIndex, matchLength, nextChar);
 
                 compressedVal.add(tokenToAdd);
                 currentIndex = matchLength + currentIndex + 1;
@@ -117,55 +117,55 @@ public class Main {
     public static byte[] decompress(ArrayList<LZ77Token> compressedVal) {
         ArrayList<Byte> decompressedVal = new ArrayList<>();
         for (LZ77Token token : compressedVal) {
-            if (token.length != 0) {
-                int startIndex = decompressedVal.size() - token.offset;
-                for (int i = 0; i < token.length; i++) {
+            if (token.getLenght() != 0) {
+                int startIndex = decompressedVal.size() - token.getOffset();
+                for (int i = 0; i < token.getLenght(); i++) {
                     decompressedVal.add(decompressedVal.get(startIndex + i));
                 }
-                if (token.character != 0) {
-                    decompressedVal.add(token.character);
+                if (token.getChar() != 0) {
+                    decompressedVal.add(token.getChar());
                 }
             } else {
-                decompressedVal.add(token.character);
+                decompressedVal.add((byte) token.getChar());
             }
         }
 
         byte[] decompressedResult = new byte[decompressedVal.size()];
         for (int i = 0; i < decompressedVal.size(); i++) {
-            decompressedresult[i] = decompressedVal.get(i);
+            decompressedResult[i] = decompressedVal.get(i);
         }
-        return decompressedresult;
+        return decompressedResult;
     }
 }
 
-
-// LZ77 token klase kas paredzēta LZ77 tokena izveidei objekta formā, lai varētu vieglāk piekļūt pie tokena informācijas pirms tā pārveidošanas
-class LZ77Token{
+class LZ77Token {
     private int offset;
-    private int lenght;
+    private int length;
     private byte character;
-    public LZ77Token(int offset, int lenght, byte character){
+
+    public LZ77Token(int offset, int length, byte character) {
         this.offset = offset;
-        this.lenght = lenght;
+        this.length = length;
         this.character = character;
     }
 
-    public int getOffset(){
+    public int getOffset() {
         return this.offset;
     }
 
-    public int getLenght(){
-        return this.lenght;
+    public int getLenght() {
+        return this.length;
     }
 
-    public int getChar(){
+    public byte getChar() {
         return this.character;
     }
-    // pārveido LZ77 tokenu par bināro masīvu, lai to varētu tālāk sūtit Huffman
-    public byte[] toBinnary(){
+
+    // Convert LZ77 token to a binary array for further processing
+    public byte[] toBinary() {
         byte[] convert = new byte[3];
-        convert[0] = (byte)offset;
-        convert[1] = (byte)lenght;
+        convert[0] = (byte) offset;
+        convert[1] = (byte) length;
         convert[2] = character;
         return convert;
     }
