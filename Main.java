@@ -69,6 +69,73 @@ public class Main {
         //byte[] hufmanout = Huffman.decompress(lzout);
         //byte[] lzout = LZ77.decompress(input);
     }
+
+
+    public static ArrayList<LZ77Token> compress(byte[] input) {
+        ArrayList<LZ77Token> compressedVal = new ArrayList<>();
+        int slidingWindowSize = 15;
+        int bufferAheadSize = 3;
+        int currentIndex = 0;
+
+        while (currentIndex < input.length) {
+            int matchLength = 0;
+            int matchStartIndex = -10;
+            int windowStartIndex = Math.max(0, currentIndex - slidingWindowSize);
+            for (int i = windowStartIndex; i < currentIndex; i++) {
+                int j = 0;
+
+                while (j < bufferAheadSize && currentIndex + j < input.length && input[i + j] == input[currentIndex + j]) {
+                    j++;
+                }
+                if (j > matchLength) {
+                    matchLength = j;
+                    matchStartIndex = i;
+                }
+            }
+
+            if (matchLength > 0) {
+                byte nextChar;
+                if (currentIndex + matchLength < input.length) {
+                    nextCharacter = input[currentIndex + matchLength];
+                } else {
+                    nextCharacter = 0;
+                }
+                LZ77Token tokenToAdd = new LZ77Token(currentIndex - matchStartIndex, matchLength, nextCharacter);
+
+                compressedVal.add(tokenToAdd);
+                currentIndex = matchLength + currentIndex + 1;
+
+            } else {
+                LZ77Token tokenToAdd = new LZ77Token(0, 0, input[currentIndex]);
+                compressedVal.add(tokenToAdd);
+                currentIndex = currentIndex + 1;
+            }
+        }
+        return compressedVal;
+    }
+
+    public static byte[] decompress(ArrayList<LZ77Token> compressedVal) {
+        ArrayList<Byte> decompressedVal = new ArrayList<>();
+        for (LZ77Token token : compressedVal) {
+            if (token.length != 0) {
+                int startIndex = decompressedVal.size() - token.offset;
+                for (int i = 0; i < token.length; i++) {
+                    decompressedVal.add(decompressedVal.get(startIndex + i));
+                }
+                if (token.character != 0) {
+                    decompressedVal.add(token.character);
+                }
+            } else {
+                decompressedVal.add(token.character);
+            }
+        }
+
+        byte[] decompressedResult = new byte[decompressedVal.size()];
+        for (int i = 0; i < decompressedVal.size(); i++) {
+            decompressedresult[i] = decompressedVal.get(i);
+        }
+        return decompressedresult;
+    }
 }
 
 
