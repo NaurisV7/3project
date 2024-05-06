@@ -46,7 +46,7 @@ public class LZ77 {
         
         
     public static String decompress(ArrayList<Token> compressedVal){
-        StringBuilder  decompressedVal = new StringBuilder();
+        StringBuilder decompressedVal = new StringBuilder();
         for(Token token : compressedVal){
             if(token.getLength() != 0){
                 int startIndex = decompressedVal.length()- token.getOffset();
