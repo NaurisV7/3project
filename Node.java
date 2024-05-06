@@ -1,4 +1,6 @@
-public class Node{
+package Project;
+
+public class Node {
     char symbol;
     int count;
     Node left;
