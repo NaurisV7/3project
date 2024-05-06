@@ -94,8 +94,8 @@ public class Huffman {
 
     public byte[] decompress(byte[] input){
         // izveido simbolu biežuma koku nolasot informāciju no faila sākuma
-        String str = new String(input, StandardCharsets.UTF_8);
-        HT.addData(str, "decomp");
+        String inputStr = new String(input, StandardCharsets.UTF_8);
+        HT.addData(inputStr, "decomp");
         int loopCount = 0, length = 0;
         boolean loopFinished = false;
         Node current = HT.root; // HT pirmais elements
